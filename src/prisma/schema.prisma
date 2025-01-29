@@ -1,0 +1,41 @@
+// prisma/schema.prisma
+
+    generator client {
+      provider = "prisma-client-js"
+    }
+
+    datasource db {
+      provider = "postgresql"
+      url      = env("DATABASE_URL")
+    }
+
+    model User {
+      id           String    @id @default(uuid())
+      email        String    @unique
+      passwordHash String
+      profile      Profile?
+      createdAt    DateTime  @default(now())
+      updatedAt    DateTime  @updatedAt
+
+      @@map("users")
+    }
+
+    model Profile {
+      id                   String   @id @default(uuid())
+      userId               String   @unique
+      user                 User     @relation(fields: [userId], references: [id])
+      betType              String
+      bettingFrequency     String
+      bettingMotivation    String
+      continuityAfterLosses String
+      financialImpact      String
+      stressLevel          String
+      workStudyImpact      String
+      profitLossRecord     Decimal
+      dailyBetValue        Decimal
+      weeklyHoursSpent     Int
+      createdAt            DateTime @default(now())
+      updatedAt            DateTime @updatedAt
+
+      @@map("profiles")
+    }

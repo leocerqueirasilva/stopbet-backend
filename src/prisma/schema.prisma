@@ -1,41 +1,97 @@
 // prisma/schema.prisma
-
+    
     generator client {
       provider = "prisma-client-js"
     }
-
+    
     datasource db {
       provider = "postgresql"
       url      = env("DATABASE_URL")
     }
-
+    
     model User {
       id           String    @id @default(uuid())
       email        String    @unique
       passwordHash String
       profile      Profile?
+      diaryEntries DiaryEntry[]
+      finances     Finance[]
+      achievements Achievement[]
+      checkIns     CheckIn[]
       createdAt    DateTime  @default(now())
       updatedAt    DateTime  @updatedAt
-
+    
       @@map("users")
     }
-
+    
     model Profile {
-      id                   String   @id @default(uuid())
-      userId               String   @unique
-      user                 User     @relation(fields: [userId], references: [id])
-      betType              String
-      bettingFrequency     String
-      bettingMotivation    String
-      continuityAfterLosses String
-      financialImpact      String
-      stressLevel          String
-      workStudyImpact      String
-      profitLossRecord     Decimal
-      dailyBetValue        Decimal
-      weeklyHoursSpent     Int
-      createdAt            DateTime @default(now())
-      updatedAt            DateTime @updatedAt
+        id                    String   @id @default(uuid())
+        userId                String   @unique
+        user                  User     @relation(fields: [userId], references: [id])
+        betType               String
+        bettingFrequency      String
+        bettingMotivation     String
+        continuityAfterLosses String
+        financialImpact       String
+        stressLevel          String
+        workStudyImpact      String
+        profitLossRecord     String   // Mudou de Decimal para String
+        dailyBetValue        String   // Mudou de Decimal para String
+        weeklyHoursSpent     String   // Mudou de Int para String
+        createdAt            DateTime @default(now())
+        updatedAt            DateTime @updatedAt
+    
+        @@map("profiles")
+      }
+    
+    model DiaryEntry {
+      id          String    @id @default(uuid())
+      userId      String
+      user        User      @relation(fields: [userId], references: [id])
+      content     String
+      status      String    // RELAPSE, WILLPOWER, SUCCESS
+      date        DateTime  @default(now())
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
 
-      @@map("profiles")
+      @@map("diary_entries")
+    }
+    
+    model Finance {
+      id          String    @id @default(uuid())
+      userId      String
+      user        User      @relation(fields: [userId], references: [id])
+      type        String    // SAVING, EXPENSE
+      amount      Decimal
+      description String
+      date        DateTime  @default(now())
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+    
+      @@map("finances")
+    }
+    
+    model Achievement {
+      id          String    @id @default(uuid())
+      userId      String
+      user        User      @relation(fields: [userId], references: [id])
+      type        String    // WEEK_CLEAN, MONTH_CLEAN, YEAR_CLEAN
+      status      String    // LOCKED, IN_PROGRESS, COMPLETED
+      progress    Int       // Progress percentage
+      earnedAt    DateTime?
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+    
+      @@map("achievements")
+    }
+    
+    model CheckIn {
+      id          String    @id @default(uuid())
+      userId      String
+      user        User      @relation(fields: [userId], references: [id])
+      type        String    // DAILY, EMERGENCY
+      notes       String?
+      createdAt   DateTime  @default(now())
+    
+      @@map("check_ins")
     }

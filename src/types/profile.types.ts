@@ -23,7 +23,7 @@
       financialImpact: string;
       stressLevel: string;
       workStudyImpact: string;
-      profitLossRecord: number;
-      dailyBetValue: number;
-      weeklyHoursSpent: number;
+      profitLossRecord: string;
+      dailyBetValue: string;
+      weeklyHoursSpent: string;
     }

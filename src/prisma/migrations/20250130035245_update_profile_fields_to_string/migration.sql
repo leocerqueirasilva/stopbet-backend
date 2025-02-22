@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "profiles" ALTER COLUMN "profitLossRecord" SET DATA TYPE TEXT,
+ALTER COLUMN "dailyBetValue" SET DATA TYPE TEXT,
+ALTER COLUMN "weeklyHoursSpent" SET DATA TYPE TEXT;

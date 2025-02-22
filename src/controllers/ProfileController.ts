@@ -28,11 +28,19 @@
       async getCurrentUserProfile(req: Request, res: Response, next: NextFunction) {
         try {
           const { userId } = req.user;
-
+          
           const profile = await prisma.profile.findUnique({
-            where: { userId }
+            where: { userId },
+            include: {
+              user: {
+                select: {
+                  email: true,
+                  fullName: true
+                }
+              }
+            }
           });
-
+      
           if (!profile) {
             return res.status(404).json({
               success: false,
@@ -42,7 +50,7 @@
               }
             });
           }
-
+      
           return res.status(200).json({
             success: true,
             data: profile

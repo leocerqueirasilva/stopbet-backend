@@ -9,8 +9,20 @@
     export class AuthController {
       async register(req: Request, res: Response, next: NextFunction) {
         try {
-          const { email, password } = req.body as RegistrationDTO;
-
+          // Adicione "fullName" no DTO
+          const { email, password, fullName } = req.body as RegistrationDTO;
+      
+          // Valide se o fullName foi fornecido
+          if (!fullName || fullName.trim().length === 0) {
+            return res.status(400).json({
+              success: false,
+              error: {
+                code: 'AUTH002',
+                message: 'Full name is required'
+              }
+            });
+          }
+      
           const existingUser = await prisma.user.findUnique({ where: { email } });
           if (existingUser) {
             return res.status(400).json({
@@ -21,26 +33,28 @@
               }
             });
           }
-
+      
           const passwordHash = await bcrypt.hash(password, 10);
           const newUser = await prisma.user.create({
             data: {
               email,
-              passwordHash
+              passwordHash,
+              fullName // Adicione o campo ao banco de dados
             }
           });
-
+      
           const token = jwt.sign({ userId: newUser.id }, jwtSecret, {
             expiresIn: jwtExpiresIn
           });
-
+      
           return res.status(201).json({
             success: true,
             data: {
               token,
               user: {
                 id: newUser.id,
-                email: newUser.email
+                email: newUser.email,
+                fullName: newUser.fullName // Retorne o nome completo na resposta
               }
             }
           });

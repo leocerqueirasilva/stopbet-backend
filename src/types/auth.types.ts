@@ -2,6 +2,7 @@
     export interface RegistrationDTO {
       email: string;
       password: string;
+      fullName: string;
     }
 
     export interface LoginDTO {

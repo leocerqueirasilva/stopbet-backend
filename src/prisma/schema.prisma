@@ -13,11 +13,13 @@
       id           String    @id @default(uuid())
       email        String    @unique
       passwordHash String
+      fullName     String?
       profile      Profile?
       diaryEntries DiaryEntry[]
       finances     Finance[]
       achievements Achievement[]
       checkIns     CheckIn[]
+      messages     Message[]
       createdAt    DateTime  @default(now())
       updatedAt    DateTime  @updatedAt
     
@@ -75,13 +77,16 @@
       id          String    @id @default(uuid())
       userId      String
       user        User      @relation(fields: [userId], references: [id])
+      name        String    // Nome da conquista
+      icon        String    // Nome/código do ícone
+      days        Int       // Dias necessários
+      description String    // Descrição da conquista
       type        String    // WEEK_CLEAN, MONTH_CLEAN, YEAR_CLEAN
       status      String    // LOCKED, IN_PROGRESS, COMPLETED
-      progress    Int       // Progress percentage
       earnedAt    DateTime?
       createdAt   DateTime  @default(now())
       updatedAt   DateTime  @updatedAt
-    
+
       @@map("achievements")
     }
     
@@ -95,3 +100,15 @@
     
       @@map("check_ins")
     }
+
+    model Message {
+      id        String   @id @default(uuid())
+      userId    String
+      user      User     @relation(fields: [userId], references: [id])
+      userName  String
+      createdAt DateTime @default(now())
+      content   String
+
+      @@map("messages")
+    }
+
